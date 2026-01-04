@@ -1,7 +1,8 @@
-import 'dart:math';
-
-import 'package:dice/features/widgets/dice_face_view.dart';
+import 'package:dice/features/normal_dice/cubit/dice_cubit.dart';
+import 'package:dice/features/normal_dice/cubit/dice_state.dart';
+import 'package:dice/features/normal_dice/widgets/dice_face_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/constants/dice_constants.dart';
 
@@ -16,9 +17,7 @@ class _DiceSpinnerPageState extends State<DiceSpinnerPage> {
   static const int _initialPage = 300;
 
   late final PageController _controller;
-  final Random _rng = Random();
 
-  bool _isSpinning = false;
   int _currentPage = _initialPage;
 
   @override
@@ -26,38 +25,38 @@ class _DiceSpinnerPageState extends State<DiceSpinnerPage> {
     super.initState();
     _controller = PageController(initialPage: _initialPage);
 
-    _controller.addListener(() {
-      final page = _controller.page;
-      if (page != null) {
-        _currentPage = page.round();
-      }
-    });
+    _controller.addListener(_onPageScroll);
+  }
+
+  void _onPageScroll() {
+    final page = _controller.page;
+    if (page == null) return;
+
+    final index = page.round();
+    if (index == _currentPage) return;
+
+    _currentPage = index;
+    context.read<DiceCubit>().onPageChanged(index);
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onPageScroll);
     _controller.dispose();
     super.dispose();
   }
 
-  int _faceForIndex(int index) {
-    return (index % DiceConstants.facesCount) + DiceConstants.minFace;
-  }
-
   Future<void> _spin() async {
-    if (_isSpinning) return;
+    final cubit = context.read<DiceCubit>();
+    if (cubit.state.isSpinning) return;
 
-    setState(() => _isSpinning = true);
+    cubit.startSpin();
 
-    final int extraSteps =
-        DiceConstants.minExtraSteps +
-        _rng.nextInt(DiceConstants.maxExtraSteps - DiceConstants.minExtraSteps);
-
-    final int targetPage = _currentPage + extraSteps;
+    final int targetPage = _currentPage + cubit.state.extraSteps;
 
     final int durationMs =
         DiceConstants.baseSpinDuration.inMilliseconds +
-        (extraSteps * DiceConstants.extraStepDurationMs);
+        (cubit.state.extraSteps * DiceConstants.extraStepDurationMs);
 
     await _controller.animateToPage(
       targetPage,
@@ -65,23 +64,25 @@ class _DiceSpinnerPageState extends State<DiceSpinnerPage> {
       curve: DiceConstants.spinCurve,
     );
 
-    setState(() => _isSpinning = false);
+    cubit.endSpin();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _spin,
-      child: PageView.builder(
-        controller: _controller,
-        physics: const NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.vertical,
-        itemBuilder: (context, index) {
-          final face = _faceForIndex(index);
-
-          return DiceFaceView(face: face);
-        },
-      ),
+    return BlocBuilder<DiceCubit, DiceState>(
+      builder: (context, state) {
+        return GestureDetector(
+          onTap: _spin,
+          child: PageView.builder(
+            controller: _controller,
+            physics: const NeverScrollableScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              return DiceFaceView(face: state.face);
+            },
+          ),
+        );
+      },
     );
   }
 }

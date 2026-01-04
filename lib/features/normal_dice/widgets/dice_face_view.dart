@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/constants/dice_constants.dart';
-import '../../../core/theme/app_colors.dart';
+import '../../../../core/constants/dice_constants.dart';
+import '../../../../core/theme/app_colors.dart';
 import 'label_text.dart';
 import 'pip_grid.dart';
 

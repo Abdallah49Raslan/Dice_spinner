@@ -2,7 +2,7 @@ import 'package:dice/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../localization_helper.dart';
+import '../../../core/helper/localization_helper.dart';
 
 class LabelText extends StatelessWidget {
   const LabelText({super.key});
