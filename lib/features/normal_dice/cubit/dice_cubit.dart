@@ -1,21 +1,17 @@
 import 'dart:math';
+
+import 'package:dice/core/constants/dice_constants.dart';
+import 'package:dice/features/normal_dice/cubit/dice_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/constants/dice_constants.dart';
-import 'dice_state.dart';
 
 class DiceCubit extends Cubit<DiceState> {
   DiceCubit() : super(const DiceState.initial());
 
   final Random _rng = Random();
 
-  void onPageChanged(int pageIndex) {
-    final face =
-        (pageIndex % DiceConstants.facesCount) + DiceConstants.minFace;
-
-    if (face != state.face) {
-      emit(state.copyWith(face: face));
-    }
-  }
+  int randomFace() =>
+      DiceConstants.minFace +
+      _rng.nextInt(DiceConstants.facesCount);
 
   void startSpin() {
     if (state.isSpinning) return;
@@ -34,8 +30,22 @@ class DiceCubit extends Cubit<DiceState> {
     );
   }
 
+  void updateFaces() {
+    emit(
+      state.copyWith(
+        face1: randomFace(),
+        face2: randomFace(),
+      ),
+    );
+  }
+
   void endSpin() {
-    if (!state.isSpinning) return;
-    emit(state.copyWith(isSpinning: false));
+    emit(
+      state.copyWith(
+        face1: randomFace(),
+        face2: randomFace(),
+        isSpinning: false,
+      ),
+    );
   }
 }

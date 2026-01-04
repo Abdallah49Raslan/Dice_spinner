@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,8 +10,9 @@ import 'pip_grid.dart';
 
 class DiceFaceView extends StatelessWidget {
   final int face;
+  final Animation<double>? rotation;
 
-  const DiceFaceView({super.key, required this.face});
+  const DiceFaceView({super.key, required this.face, this.rotation});
 
   @override
   Widget build(BuildContext context) {
@@ -22,36 +25,48 @@ class DiceFaceView extends StatelessWidget {
           children: [
             const Positioned(top: 16, left: 0, right: 0, child: LabelText()),
             Center(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final size =
-                      constraints.biggest.shortestSide *
-                      DiceConstants.diceSizeRatio;
-
-                  return Container(
-                    width: size,
-                    height: size,
-                    padding: EdgeInsets.all(
-                      size * DiceConstants.dicePaddingRatio,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.diceBackgroundOverlay,
-                      borderRadius: BorderRadius.circular(24.r),
-                      border: Border.all(color: AppColors.diceBorder, width: 2.w),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.defaultShadow,
-                          blurRadius: 30,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: PipGrid(
-                      filledIndices: pips,
-                      pipColor: AppColors.white,
-                    ),
+              child: AnimatedBuilder(
+                animation: rotation ?? AlwaysStoppedAnimation(0.0),
+                builder: (context, child) {
+                  return Transform.rotate(
+                    angle: (rotation?.value ?? 0) * 6 * pi,
+                    child: child,
                   );
                 },
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final size =
+                        constraints.biggest.shortestSide *
+                        DiceConstants.diceSizeRatio;
+
+                    return Container(
+                      width: size,
+                      height: size,
+                      padding: EdgeInsets.all(
+                        size * DiceConstants.dicePaddingRatio,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.diceBackgroundOverlay,
+                        borderRadius: BorderRadius.circular(24.r),
+                        border: Border.all(
+                          color: AppColors.diceBorder,
+                          width: 2.w,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.defaultShadow,
+                            blurRadius: 30,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: PipGrid(
+                        filledIndices: pips,
+                        pipColor: AppColors.white,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],

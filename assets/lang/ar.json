@@ -1,4 +1,9 @@
 {
   "tapToSpin": "اضغط في أي مكان علشان تلف الزهر",
-  "diceNumber": "رقم: {value}"
+  "diceNumber": "رقم: {value}",
+  "choose_dice_count": "اختر عدد النرد",
+  "normal_game": "لعبة عادية",
+  "game_mode": "أوضاع اللعب",
+  "one_dice": "نرد واحد",
+  "two_dice": "نردين"
 }

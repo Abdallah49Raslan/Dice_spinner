@@ -1,4 +1,9 @@
 {
   "tapToSpin": "Tap anywhere to spin the dice",
-  "diceNumber": "Number: {value}"
+  "diceNumber": "Number: {value}",
+  "choose_dice_count" : "Choose Dice Count",
+  "normal_game": "Normal Game",
+  "game_mode": "Game Mode",
+  "one_dice": "One Dice",
+  "two_dice": "Two Dice"
 }
