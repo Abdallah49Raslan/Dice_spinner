@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:dice/core/constants/dice_constants.dart';
-import 'package:dice/features/normal_dice/cubit/dice_state.dart';
+import '../../../core/constants/dice_constants.dart';
+import 'dice_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DiceCubit extends Cubit<DiceState> {

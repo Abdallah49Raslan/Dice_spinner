@@ -1,5 +1,5 @@
-import 'package:dice/app/app_routes.dart';
-import 'package:dice/core/helper/localization_helper.dart';
+import 'app_routes.dart';
+import '../core/helper/localization_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

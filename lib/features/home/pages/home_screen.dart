@@ -1,67 +1,13 @@
-import 'package:dice/core/helper/localization_helper.dart';
-import 'package:dice/core/theme/app_colors.dart';
-import 'package:dice/features/home/widget/main_button.dart';
-import 'package:dice/features/home/widget/option_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/helper/localization_helper.dart';
+import '../../../core/theme/app_colors.dart';
+import '../widget/main_button.dart';
+import '../widget/show_options.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  void _showNormalGameOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.scaffoldBackground,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) {
-        return Padding(
-          padding: EdgeInsets.all(24.w),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                LocalizationHelper.of(context).translate('choose_dice_count'),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              SizedBox(height: 20.h),
-
-              // 🎲 One Dice
-              OptionButton(
-                icon: Icons.casino,
-                label: LocalizationHelper.of(context).translate('one_dice'),
-
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/one_dice');
-                },
-              ),
-
-              SizedBox(height: 12.h),
-
-              // 🎲🎲 Two Dice (later)
-              OptionButton(
-                icon: Icons.casino_outlined,
-                label: LocalizationHelper.of(context).translate('two_dice'),
-
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/two_dice');
-                  // لاحقًا: صفحة 2 نرد
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +31,28 @@ class HomeScreen extends StatelessWidget {
               MainButton(
                 icon: Icons.casino,
                 label: LocalizationHelper.of(context).translate('normal_game'),
-
-                onTap: () => _showNormalGameOptions(context),
+                onTap: () {
+                  showOptions(
+                    context: context,
+                    titleKey: 'choose_dice_count',
+                    options: [
+                      OptionItem(
+                        icon: Icons.casino,
+                        labelKey: 'one_dice',
+                        onTap: () {
+                          Navigator.pushNamed(context, '/one_dice');
+                        },
+                      ),
+                      OptionItem(
+                        icon: Icons.casino_outlined,
+                        labelKey: 'two_dice',
+                        onTap: () {
+                          Navigator.pushNamed(context, '/two_dice');
+                        },
+                      ),
+                    ],
+                  );
+                },
               ),
 
               SizedBox(height: 20.h),
@@ -95,9 +61,20 @@ class HomeScreen extends StatelessWidget {
               MainButton(
                 icon: Icons.sports_esports,
                 label: LocalizationHelper.of(context).translate('game_mode'),
-
                 onTap: () {
-                  // لاحقًا Game Modes
+                  showOptions(
+                    context: context,
+                    titleKey: 'choose_game',
+                    options: [
+                      OptionItem(
+                        icon: Icons.extension,
+                        labelKey: 'liars_dice',
+                        onTap: () {
+                          Navigator.pushNamed(context, '/liars_dice_setup');
+                        },
+                      ),
+                    ],
+                  );
                 },
               ),
             ],

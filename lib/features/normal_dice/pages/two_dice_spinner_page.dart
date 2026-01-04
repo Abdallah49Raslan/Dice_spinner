@@ -1,11 +1,11 @@
-import 'package:dice/features/normal_dice/cubit/dice_cubit.dart';
-import 'package:dice/features/normal_dice/cubit/dice_state.dart';
-import 'package:dice/features/normal_dice/widgets/dice_face_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/constants/dice_constants.dart';
+import '../cubit/dice_cubit.dart';
+import '../cubit/dice_state.dart';
+import '../widgets/dice_face_view.dart';
 
 class TwoDiceSpinnerPage extends StatefulWidget {
   const TwoDiceSpinnerPage({super.key});

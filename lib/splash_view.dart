@@ -1,6 +1,6 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:dice/core/theme/app_colors.dart';
-import 'package:dice/features/home/pages/home_screen.dart';
+import 'core/theme/app_colors.dart';
+import 'features/home/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
