@@ -1,3 +1,4 @@
+// ignore_for_file: invalid_use_of_protected_member
 import 'package:dice/features/normal_dice/cubit/dice_cubit.dart';
 import 'package:dice/features/normal_dice/cubit/dice_state.dart';
 import 'package:dice/features/normal_dice/widgets/dice_face_view.dart';
