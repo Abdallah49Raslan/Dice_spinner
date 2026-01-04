@@ -1,7 +1,8 @@
+import 'package:dice/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/theme/app_colors.dart';
+import '../../localization_helper.dart';
 
 class LabelText extends StatelessWidget {
   const LabelText({super.key});
@@ -11,9 +12,11 @@ class LabelText extends StatelessWidget {
     return Opacity(
       opacity: 0.9,
       child: Text(
-        'Tap to roll',
+        LocalizationHelper.of(context).translate('tapToSpin'),
+        textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 14.sp,
+          inherit: false,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w500,
           color: AppColors.textPrimary,
         ),

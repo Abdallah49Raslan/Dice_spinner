@@ -1,10 +1,10 @@
 // ignore_for_file: depend_on_referenced_packages
-import 'splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'localization_helper.dart';
+import 'splash_view.dart';
 
 void main() async {
   runApp(const MyApp());

@@ -35,7 +35,7 @@ class PipGrid extends StatelessWidget {
                 BoxShadow(
                   // ignore: deprecated_member_use
                   color: Colors.black.withOpacity(0.25),
-                  blurRadius: 8,
+                  blurRadius: 8.r,
                   offset: const Offset(0, 3),
                 ),
               ],
