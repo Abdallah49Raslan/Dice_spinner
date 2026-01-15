@@ -1,23 +1,43 @@
 // ignore_for_file: invalid_use_of_protected_member
-import 'dart:math';
 
 import 'package:dice/features/normal_dice/widgets/dice_face_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/constants/dice_constants.dart';
+import '../../../../core/constants/dice_constants.dart';
+
+typedef FacePicker = int Function();
+typedef FaceChanged = void Function(int face);
 
 class AnimatedDiceView extends StatefulWidget {
   final int face;
-  final int spinToken; // 👈 يتغير مع كل Roll
-  final double size;
+  final int? spinToken;
+  final bool enableTapSpin;
+
+  /// ✅ اختياري: لو null هنسيب DiceFaceView يحسب الحجم من DiceConstants
+  final double? size;
+
+  final bool showBackground;
+  final bool showLabel;
+
+  final FacePicker tickFacePicker;
+  final FacePicker? finishFacePicker;
+
+  final FaceChanged? onTickFace;
+  final FaceChanged? onFinishFace;
 
   const AnimatedDiceView({
     super.key,
     required this.face,
-    required this.spinToken,
-    this.size = 72,
+    required this.tickFacePicker,
+    this.finishFacePicker,
+    this.onTickFace,
+    this.onFinishFace,
+    this.spinToken,
+    this.enableTapSpin = false,
+    this.size,
+    this.showBackground = true,
+    this.showLabel = false,
   });
 
   @override
@@ -31,13 +51,12 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
 
   int _tempFace = 1;
   bool _spinning = false;
-  final Random _random = Random();
 
   @override
   void initState() {
     super.initState();
 
-    _tempFace = widget.face <= 0 ? 1 : widget.face;
+    _tempFace = _sanitizeFace(widget.face);
 
     _controller = AnimationController(
       vsync: this,
@@ -49,9 +68,9 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
       curve: DiceConstants.spinCurve,
     );
 
-    // ✅ مهم: يبدأ اللف حتى في أول Build
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _startSpin();
+      if (!mounted) return;
+      if (widget.spinToken != null) _startSpin();
     });
   }
 
@@ -59,10 +78,17 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
   void didUpdateWidget(covariant AnimatedDiceView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // ✅ كل مرة spinToken يتغير، نلف تاني
-    if (widget.spinToken != oldWidget.spinToken) {
+    if (widget.spinToken != null && widget.spinToken != oldWidget.spinToken) {
       _startSpin();
+      return;
     }
+
+    _tempFace = _sanitizeFace(widget.face);
+  }
+
+  int _sanitizeFace(int face) {
+    final f = face <= 0 ? DiceConstants.minFace : face;
+    return f.clamp(DiceConstants.minFace, DiceConstants.maxFace);
   }
 
   Future<void> _startSpin() async {
@@ -75,7 +101,9 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
     final ticker = Ticker((elapsed) {
       if (elapsed.inMilliseconds - lastTick >= 100) {
         lastTick = elapsed.inMilliseconds;
-        setState(() => _tempFace = _random.nextInt(6) + 1);
+        final next = _sanitizeFace(widget.tickFacePicker());
+        setState(() => _tempFace = next);
+        widget.onTickFace?.call(next);
       }
     });
 
@@ -87,10 +115,16 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
 
     if (!mounted) return;
 
+    final finalFace = _sanitizeFace(
+      widget.finishFacePicker?.call() ?? widget.face,
+    );
+
     setState(() {
-      _tempFace = widget.face <= 0 ? 1 : widget.face;
+      _tempFace = finalFace;
       _spinning = false;
     });
+
+    widget.onFinishFace?.call(finalFace);
   }
 
   @override
@@ -101,10 +135,16 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
 
   @override
   Widget build(BuildContext context) {
-    return DiceFaceView.pure(
+    final diceWidget = DiceFaceView(
       face: _tempFace,
       rotation: _rotation,
-      size: widget.size.w,
+      size: widget.size, // ✅ null = DiceFaceView يحسب الحجم بنفسه
+      showBackground: widget.showBackground,
+      showLabel: widget.showLabel,
     );
+
+    if (!widget.enableTapSpin) return diceWidget;
+
+    return GestureDetector(onTap: _startSpin, child: diceWidget);
   }
 }

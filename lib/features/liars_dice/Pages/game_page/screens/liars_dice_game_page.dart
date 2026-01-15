@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+
+import 'package:dice/core/constants/dice_constants.dart';
 import 'package:dice/features/liars_dice/Pages/game_page/widgets/claim/claim_selector_sheet.dart';
 import 'package:dice/features/liars_dice/cubit/liars_dice_cubit.dart';
 import 'package:dice/features/liars_dice/cubit/liars_dice_state.dart';
@@ -67,41 +70,76 @@ class LiarsDiceGamePage extends StatelessWidget {
                   SizedBox(height: 32.h),
 
                   Expanded(
-                    child: Center(
-                      child: state.showDice
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: currentPlayer.dice.map((value) {
-                                return Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 6.w),
-                                  child: AnimatedDiceView(
-                                    face: value,
-                                    spinToken: state.spinToken,
-                                    size: 72.w,
-                                  ),
-                                );
-                              }).toList(),
-                            )
-                          : Text(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        if (!state.showDice) {
+                          return Center(
+                            child: Text(
                               t.translate('dice_hidden'),
                               style: TextStyle(
                                 color: Colors.white54,
                                 fontSize: 16.sp,
                               ),
                             ),
+                          );
+                        }
+
+                        final diceCount = currentPlayer.dice.length;
+                        final spacing = 12.w;
+                        final availableWidth = constraints.maxWidth;
+
+                        final maxPerDice = diceCount > 0
+                            ? (availableWidth - (spacing * (diceCount - 1))) /
+                                  diceCount
+                            : availableWidth;
+
+                        final desired =
+                            availableWidth * DiceConstants.diceSizeRatio;
+
+                        final diceSize = math.min(
+                          math.min(maxPerDice, desired),
+                          110.w,
+                        );
+
+                        final rng = math.Random(); // ✅ واحد ثابت لكل build
+
+                        return Center(
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: spacing,
+                            runSpacing: spacing,
+                            children: currentPlayer.dice.map((value) {
+                              return AnimatedDiceView(
+                                face: value, // ✅ الوجه النهائي الحقيقي
+                                spinToken:
+                                    state.spinToken, // ✅ يشغل spin عند التغيير
+                                size: diceSize, // ✅ Responsive
+
+                                showBackground:
+                                    true, // ✅ علشان الألوان تظهر من DiceConstants
+                                showLabel: false,
+
+                                // ✅ أثناء اللف: وجوه عشوائية
+                                tickFacePicker: () =>
+                                    rng.nextInt(DiceConstants.facesCount) +
+                                    DiceConstants.minFace,
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      },
                     ),
                   ),
 
                   SizedBox(height: 24.h),
 
-                  // ✅ Next يظهر مكان Roll Dice
                   GameActionButtons(
-                    rollLabel: canNext ? t.translate('next') : t.translate('roll_dice'),
+                    rollLabel: canNext
+                        ? t.translate('next')
+                        : t.translate('roll_dice'),
                     claimLabel: t.translate('claim'),
                     liarLabel: t.translate('liar'),
 
-                    // ✅ نفس الزر: Roll أو Next
                     onRoll: canNext
                         ? () => cubit.confirmRollNext()
                         : (canRoll ? () => cubit.rollCurrentPlayer() : null),
@@ -111,8 +149,10 @@ class LiarsDiceGamePage extends StatelessWidget {
                             showClaimSelector(
                               context: context,
                               currentBid: state.currentClaim,
-                              isHardLevel:
-                                  context.read<LiarsDiceCubit>().config.onesAreWild,
+                              isHardLevel: context
+                                  .read<LiarsDiceCubit>()
+                                  .config
+                                  .onesAreWild,
                               maxQuantity: state.players.fold(
                                 0,
                                 (sum, p) => sum + p.dice.length,

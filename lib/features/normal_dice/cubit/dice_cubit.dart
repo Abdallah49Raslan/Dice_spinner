@@ -1,8 +1,9 @@
 import 'dart:math';
 
-import '../../../core/constants/dice_constants.dart';
-import 'dice_state.dart';
+import 'package:dice/features/normal_dice/cubit/dice_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../core/constants/dice_constants.dart';
 
 class DiceCubit extends Cubit<DiceState> {
   DiceCubit() : super(const DiceState.initial());
@@ -10,17 +11,13 @@ class DiceCubit extends Cubit<DiceState> {
   final Random _rng = Random();
 
   int randomFace() =>
-      DiceConstants.minFace +
-      _rng.nextInt(DiceConstants.facesCount);
+      DiceConstants.minFace + _rng.nextInt(DiceConstants.facesCount);
 
   void startSpin() {
     if (state.isSpinning) return;
 
-    final extraSteps =
-        DiceConstants.minExtraSteps +
-        _rng.nextInt(
-          DiceConstants.maxExtraSteps - DiceConstants.minExtraSteps,
-        );
+    final extraSteps = DiceConstants.minExtraSteps +
+        _rng.nextInt(DiceConstants.maxExtraSteps - DiceConstants.minExtraSteps);
 
     emit(
       state.copyWith(
@@ -28,6 +25,11 @@ class DiceCubit extends Cubit<DiceState> {
         extraSteps: extraSteps,
       ),
     );
+  }
+
+  /// ✅ Token يزيد مع كل spin علشان Widgets زي DiceSpinView تلتقط التغيير وتبدأ أنيميشن
+  void bumpSpinToken() {
+    emit(state.copyWith(spinToken: state.spinToken + 1));
   }
 
   void updateFaces() {

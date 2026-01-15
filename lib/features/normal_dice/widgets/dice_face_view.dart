@@ -15,7 +15,6 @@ class DiceFaceView extends StatelessWidget {
   final bool showLabel;
   final double? size;
 
-  /// الكونستركتور العادي (زي ما كان)
   const DiceFaceView({
     super.key,
     required this.face,
@@ -25,20 +24,22 @@ class DiceFaceView extends StatelessWidget {
     this.size,
   });
 
-  /// 👈 الكونستركتور الجديد (النرد الخام فقط)
   const DiceFaceView.pure({
     super.key,
     required this.face,
     this.rotation,
     this.size,
-  })  : showBackground = false,
-        showLabel = false;
+  }) : showBackground = false,
+       showLabel = false;
 
   @override
   Widget build(BuildContext context) {
-    // حماية من أي قيمة غلط
     final safeFace = face.clamp(1, 6);
     final pips = DiceConstants.pipMap[safeFace]!;
+
+    // ✅ لون الوجه حسب الرقم (لون الزهر نفسه فقط)
+    final faceColor =
+        DiceConstants.faceColors[(safeFace - 1) % DiceConstants.facesCount];
 
     final dice = LayoutBuilder(
       builder: (context, constraints) {
@@ -53,13 +54,21 @@ class DiceFaceView extends StatelessWidget {
             calculatedSize * DiceConstants.dicePaddingRatio,
           ),
           decoration: BoxDecoration(
-            color: AppColors.diceBackgroundOverlay,
+            // ✅ اللون على الزهر فقط
+            color: showBackground
+                ? faceColor.withOpacity(DiceConstants.diceBackgroundOpacity)
+                : AppColors.diceBackgroundOverlay,
             borderRadius: BorderRadius.circular(24.r),
-            border: Border.all(color: AppColors.diceBorder, width: 2.w),
+            border: Border.all(
+              color: showBackground
+                  ? faceColor.withOpacity(DiceConstants.diceBorderOpacity)
+                  : AppColors.diceBorder,
+              width: 2.w,
+            ),
             boxShadow: showBackground
                 ? [
                     BoxShadow(
-                      color: AppColors.defaultShadow,
+                      color: faceColor.withOpacity(0.35),
                       blurRadius: 30,
                       offset: const Offset(0, 10),
                     ),
@@ -87,11 +96,9 @@ class DiceFaceView extends StatelessWidget {
       return rotatedDice;
     }
 
-    // ✅ الوضع الكامل (زي DiceSpinner)
+    // ✅ الوضع الكامل: خلفية من لون الخلفية الرئيسي للتطبيق (مش لون الوجه)
     return Container(
-      color: showBackground
-          ? DiceConstants.faceColors[(safeFace - 1) % DiceConstants.facesCount]
-          : Colors.transparent,
+      color: AppColors.scaffoldBackground,
       child: Stack(
         children: [
           if (showLabel)
