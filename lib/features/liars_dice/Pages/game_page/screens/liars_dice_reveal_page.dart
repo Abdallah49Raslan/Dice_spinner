@@ -3,7 +3,10 @@ import 'package:dice/core/theme/app_colors.dart';
 import 'package:dice/features/liars_dice/Pages/game_page/widgets/reveal/reveal_actions.dart';
 import 'package:dice/features/liars_dice/Pages/game_page/widgets/reveal/reveal_header.dart';
 import 'package:dice/features/liars_dice/Pages/game_page/widgets/reveal/reveal_player_dice_card.dart';
+import 'package:dice/features/liars_dice/cubit/liars_dice_cubit.dart';
+import 'package:dice/features/liars_dice/cubit/liars_dice_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LiarsDiceRevealPage extends StatelessWidget {
@@ -13,47 +16,82 @@ class LiarsDiceRevealPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = LocalizationHelper.of(context);
 
-    // UI-only dummy data
-    final players = ['Player 1', 'Player 2', 'Player 3'];
-    final diceValues = [3, 6, 2];
-    final winner = 'Player 1';
-
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(24.w),
-          child: Column(
-            children: [
-              RevealHeader(
-                title: t.translate('round_result'),
-                subtitle: t.translate('winner_is', params: {'player': winner}),
-              ),
+          child: BlocListener<LiarsDiceCubit, LiarsDiceState>(
+            listenWhen: (prev, curr) =>
+                prev.players.length != curr.players.length &&
+                curr.players.length == 1,
+            listener: (context, state) {
+              Navigator.pushReplacementNamed(
+                context,
+                '/liars_dice_winner',
+                arguments: context.read<LiarsDiceCubit>(),
+              );
+            },
+            child: BlocBuilder<LiarsDiceCubit, LiarsDiceState>(
+              builder: (context, state) {
+                final result = state.lastRoundResult;
 
-              SizedBox(height: 32.h),
+                if (result == null) {
+                  return const SizedBox();
+                }
 
-              Expanded(
-                child: ListView.separated(
-                  itemCount: players.length,
-                  separatorBuilder: (_, __) => SizedBox(height: 16.h),
-                  itemBuilder: (context, index) {
-                    return RevealPlayerDiceCard(
-                      playerName: players[index],
-                      diceValue: diceValues[index],
-                    );
-                  },
-                ),
-              ),
+                final winner = result.playersSnapshot[result.winnerIndex];
+                final loser = result.playersSnapshot[result.loserIndex];
 
-              SizedBox(height: 24.h),
+                return Column(
+                  children: [
+                    RevealHeader(
+                      title: t.translate('round_result'),
+                      subtitle: t.translate(
+                        'winner_is',
+                        params: {'player': winner.name},
+                      ),
+                    ),
 
-              RevealActions(
-                nextRoundLabel: t.translate('next_round'),
-                endGameLabel: t.translate('end_game'),
-                onNextRound: () {},
-                onEndGame: () {},
-              ),
-            ],
+                    SizedBox(height: 32.h),
+
+                    Expanded(
+                      child: ListView.separated(
+                        itemCount: result.playersSnapshot.length,
+                        separatorBuilder: (_, __) => SizedBox(height: 16.h),
+                        itemBuilder: (context, index) {
+                          final player = result.playersSnapshot[index];
+
+                          return RevealPlayerDiceCard(
+                            playerName: player.name,
+                            diceValues: player.dice,
+                            isWinner: player.name == winner.name,
+                            isLoser: player.name == loser.name,
+                          );
+                        },
+                      ),
+                    ),
+
+                    SizedBox(height: 24.h),
+
+                    RevealActions(
+                      nextRoundLabel: t.translate('next_round'),
+                      endGameLabel: t.translate('end_game'),
+                      onNextRound: () {
+                        context.read<LiarsDiceCubit>().nextRound();
+                        Navigator.pop(context);
+                      },
+                      onEndGame: () {
+                        Navigator.popUntil(
+                          context,
+                          ModalRoute.withName('/home'),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../../../core/helper/localization_helper.dart';
 import '../../../../../core/theme/app_colors.dart';
 import '../../../models/liars_dice_setup_args.dart';
 import '../widgets/player_name_field.dart';
 import '../widgets/players_count_chip.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LiarsDiceSetupPage extends StatefulWidget {
   const LiarsDiceSetupPage({super.key});
@@ -127,14 +128,23 @@ class _LiarsDiceSetupPageState extends State<LiarsDiceSetupPage> {
                 height: 52.h,
                 child: ElevatedButton(
                   onPressed: () {
+                    final players = controllers
+                        .map((c) => c.text.trim())
+                        .where((name) => name.isNotEmpty)
+                        .toList();
+
+                    if (players.length < 2) {
+                      // ممكن SnackBar بعدين
+                      return;
+                    }
+
                     Navigator.pushNamed(
                       context,
                       '/liars_dice_levels',
-                      arguments: LiarsDiceSetupArgs(
-                        players: controllers.map((c) => c.text).toList(),
-                      ),
+                      arguments: LiarsDiceSetupArgs(players: players),
                     );
                   },
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,

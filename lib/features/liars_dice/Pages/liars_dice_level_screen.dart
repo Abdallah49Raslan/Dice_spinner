@@ -1,20 +1,21 @@
+import 'package:dice/features/liars_dice/models/game_config.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../../core/helper/localization_helper.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../home/widget/option_button.dart';
 import '../models/liars_dice_setup_args.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LiarsDiceLevelScreen extends StatelessWidget {
-  const LiarsDiceLevelScreen({super.key});
+  final LiarsDiceSetupArgs args;
+
+  const LiarsDiceLevelScreen({super.key, required this.args});
 
   @override
   Widget build(BuildContext context) {
     final t = LocalizationHelper.of(context);
-    final args =
-        ModalRoute.of(context)?.settings.arguments as LiarsDiceSetupArgs?;
-
-    final List<String> players = args?.players ?? [];
+    final players = args.players;
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
@@ -35,7 +36,7 @@ class LiarsDiceLevelScreen extends StatelessWidget {
 
               SizedBox(height: 30.h),
 
-              // Easy (Enabled)
+              // Easy
               OptionButton(
                 icon: Icons.looks_one,
                 label: t.translate('easy'),
@@ -43,10 +44,7 @@ class LiarsDiceLevelScreen extends StatelessWidget {
                   Navigator.pushNamed(
                     context,
                     '/liars_dice_game',
-                    arguments: {
-                      'players': players,
-                      'diceCount': 1, // Easy
-                    },
+                    arguments: {'players': players, 'level': GameLevel.easy},
                   );
                 },
               ),
@@ -57,7 +55,7 @@ class LiarsDiceLevelScreen extends StatelessWidget {
               OptionButton(
                 icon: Icons.looks_3,
                 label: t.translate('medium'),
-                onTap: null, // Disabled
+                onTap: null,
               ),
 
               SizedBox(height: 16.h),
@@ -66,7 +64,7 @@ class LiarsDiceLevelScreen extends StatelessWidget {
               OptionButton(
                 icon: Icons.looks_5,
                 label: t.translate('hard'),
-                onTap: null, // Disabled
+                onTap: null,
               ),
             ],
           ),

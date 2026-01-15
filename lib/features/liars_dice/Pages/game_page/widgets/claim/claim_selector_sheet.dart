@@ -1,3 +1,4 @@
+import 'package:dice/features/liars_dice/models/claim_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -6,7 +7,13 @@ import '../../../../../../core/theme/app_colors.dart';
 import 'claim_face_selector.dart';
 import 'claim_quantity_selector.dart';
 
-void showClaimSelector({required BuildContext context}) {
+void showClaimSelector({
+  required BuildContext context,
+  required void Function(int quantity, int face) onConfirm,
+  required ClaimModel? currentBid,
+  required bool isHardLevel,
+  required int maxQuantity,
+}) {
   showModalBottomSheet(
     context: context,
     backgroundColor: AppColors.scaffoldBackground,
@@ -16,11 +23,23 @@ void showClaimSelector({required BuildContext context}) {
     builder: (_) {
       final t = LocalizationHelper.of(context);
 
-      int selectedQuantity = 1;
-      int selectedFace = 1;
+      int selectedQuantity =
+          currentBid?.quantity ?? 1;
+      int selectedFace =
+          currentBid?.face ?? 1;
 
       return StatefulBuilder(
         builder: (context, setState) {
+          final int minQuantity =
+              currentBid?.quantity ?? 1;
+
+          final int minFace =
+              (currentBid != null &&
+                      selectedQuantity ==
+                          currentBid!.quantity)
+                  ? currentBid!.face
+                  : 1;
+
           return Padding(
             padding: EdgeInsets.all(24.w),
             child: Column(
@@ -39,8 +58,15 @@ void showClaimSelector({required BuildContext context}) {
 
                 ClaimQuantitySelector(
                   selected: selectedQuantity,
+                  minQuantity: minQuantity,
+                  maxQuantity: maxQuantity,
                   onChanged: (value) {
-                    setState(() => selectedQuantity = value);
+                    setState(() {
+                      selectedQuantity = value;
+                      if (selectedFace < minFace) {
+                        selectedFace = minFace;
+                      }
+                    });
                   },
                 ),
 
@@ -48,6 +74,8 @@ void showClaimSelector({required BuildContext context}) {
 
                 ClaimFaceSelector(
                   selected: selectedFace,
+                  minFace: minFace,
+                  forbidOne: isHardLevel,
                   onChanged: (value) {
                     setState(() => selectedFace = value);
                   },
@@ -61,13 +89,17 @@ void showClaimSelector({required BuildContext context}) {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      // Logic later
+                      onConfirm(
+                        selectedQuantity,
+                        selectedFace,
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.r),
+                        borderRadius:
+                            BorderRadius.circular(16.r),
                       ),
                     ),
                     child: Text(
