@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../core/helper/localization_helper.dart';
+
 class ClaimFaceSelector extends StatelessWidget {
   final int selected;
   final ValueChanged<int> onChanged;
@@ -17,11 +19,13 @@ class ClaimFaceSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = LocalizationHelper.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Face',
+          t.translate('face'),
           style: TextStyle(color: Colors.white70, fontSize: 14.sp),
         ),
         SizedBox(height: 12.h),
@@ -30,9 +34,7 @@ class ClaimFaceSelector extends StatelessWidget {
           children: List.generate(6, (index) {
             final value = index + 1;
 
-            final bool disabled =
-                value < minFace || (forbidOne && value == 1);
-
+            final bool disabled = value < minFace || (forbidOne && value == 1);
             final bool isSelected = value == selected;
 
             return GestureDetector(
@@ -46,9 +48,8 @@ class ClaimFaceSelector extends StatelessWidget {
                   height: 44.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected
-                        ? Colors.white
-                        : Colors.white.withOpacity(0.1),
+                    color:
+                        isSelected ? Colors.white : Colors.white.withOpacity(0.1),
                     boxShadow: isSelected
                         ? [
                             BoxShadow(

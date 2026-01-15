@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../core/helper/localization_helper.dart';
 import '../../../../../core/theme/app_colors.dart';
 
 class LiarsDiceWinnerPage extends StatelessWidget {
@@ -11,6 +12,8 @@ class LiarsDiceWinnerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = LocalizationHelper.of(context);
+
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground,
       body: SafeArea(
@@ -28,7 +31,12 @@ class LiarsDiceWinnerPage extends StatelessWidget {
                 final standings = state.finalStandings ?? const [];
 
                 if (standings.isEmpty) {
-                  return const Center(child: Text('No standings'));
+                  return Center(
+                    child: Text(
+                      t.translate('no_standings'),
+                      style: TextStyle(color: Colors.white70, fontSize: 14.sp),
+                    ),
+                  );
                 }
 
                 final winner = standings.first;
@@ -37,7 +45,7 @@ class LiarsDiceWinnerPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Winner',
+                      t.translate('winner'),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24.sp,
@@ -56,7 +64,7 @@ class LiarsDiceWinnerPage extends StatelessWidget {
                     SizedBox(height: 24.h),
 
                     Text(
-                      'Final Standings',
+                      t.translate('final_standings'),
                       style: TextStyle(color: Colors.white70, fontSize: 14.sp),
                     ),
                     SizedBox(height: 12.h),
@@ -68,15 +76,15 @@ class LiarsDiceWinnerPage extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final p = standings[index];
                           final rank = index + 1;
+
                           return Container(
                             padding: EdgeInsets.all(14.w),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.08),
                               borderRadius: BorderRadius.circular(14.r),
                               border: Border.all(
-                                color: index == 0
-                                    ? Colors.white
-                                    : Colors.white24,
+                                color:
+                                    index == 0 ? Colors.white : Colors.white24,
                                 width: index == 0 ? 2 : 1,
                               ),
                             ),
@@ -129,7 +137,7 @@ class LiarsDiceWinnerPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16.r),
                           ),
                         ),
-                        child: const Text('Back to Home'),
+                        child: Text(t.translate('back_to_home')),
                       ),
                     ),
                   ],

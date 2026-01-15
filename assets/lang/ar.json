@@ -1,32 +1,58 @@
 {
-  "tapToSpin": "اضغط في أي مكان علشان تلف الزهر",
-  "diceNumber": "رقم: {value}",
-  "choose_dice_count": "اختر عدد النرد",
+  
+  "choose_game": "اختر اللعبة",
   "normal_game": "نرد عادي",
+  "liars_dice": "نرد الكذاب",
+
+  
   "game_mode": "أوضاع اللعب",
   "one_dice": "نرد واحد",
   "two_dice": "نردين",
-  "player_turn": "دور اللاعب {player}",
-  "dice_hidden": "النرد مخفي",
-  "roll_dice": "لف النرد",
-  "claim": "مراهنة",
-  "liar": "كذاب",
-   "choose_game": "اختر اللعبة",
-  "liars_dice": "نرد الكذاب",
+
+  
+  "choose_dice_count": "اختر عدد النرد",
+
+  
+  "tapToSpin": "اضغط في أي مكان علشان تلف الزهر",
+  "diceNumber": "رقم: {value}",
+
+  
   "choose_level": "اختر المستوى",
   "easy": "سهل",
   "medium": "متوسط",
   "hard": "صعب",
-    "players_setup": "إعداد اللاعبين",
+
+ 
+  "players_setup": "إعداد اللاعبين",
   "number_of_players": "عدد اللاعبين",
   "player_names": "أسماء اللاعبين",
   "player_n": "اللاعب {number}",
   "start_game": "ابدأ اللعب",
+
+  
+  "player_turn": "دور اللاعب {player}",
+  "dice_hidden": "النرد مخفي",
   "dice_shown": "النرد ظاهر",
-   "round_result": "نتيجة الجولة",
+  "roll_dice": "لف النرد",
+  "next": "التالي",
+  "claim": "مراهنة",
+  "liar": "كذاب",
+
+  "round_result": "نتيجة الجولة",
   "winner_is": "{player} فاز بالجولة",
   "next_round": "جولة جديدة",
   "end_game": "إنهاء اللعبة",
+
+  
   "make_claim": "حدد المراهنة",
-  "confirm": "تأكيد"
+  "confirm": "تأكيد",
+  "quantity": "العدد",
+"face": "الوجه",
+  
+
+
+  "winner": "الفائز",
+  "final_standings": "الترتيب النهائي",
+  "back_to_home": "العودة للرئيسية",
+  "no_standings": "لا توجد نتائج"
 }

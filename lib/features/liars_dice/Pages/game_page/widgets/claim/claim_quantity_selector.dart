@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../../../core/helper/localization_helper.dart';
+
 class ClaimQuantitySelector extends StatelessWidget {
   final int selected;
   final ValueChanged<int> onChanged;
@@ -17,11 +19,13 @@ class ClaimQuantitySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = LocalizationHelper.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Quantity',
+          t.translate('quantity'),
           style: TextStyle(color: Colors.white70, fontSize: 14.sp),
         ),
         SizedBox(height: 12.h),
@@ -43,9 +47,8 @@ class ClaimQuantitySelector extends StatelessWidget {
                   height: 44.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected
-                        ? Colors.white
-                        : Colors.white.withOpacity(0.1),
+                    color:
+                        isSelected ? Colors.white : Colors.white.withOpacity(0.1),
                     boxShadow: isSelected
                         ? [
                             BoxShadow(

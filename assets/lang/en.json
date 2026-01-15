@@ -1,33 +1,59 @@
 {
-  "tapToSpin": "Tap anywhere to spin the dice",
-  "diceNumber": "Number: {value}",
-  "choose_dice_count" : "Choose Dice Count",
+  
+  "choose_game": "Choose Game",
   "normal_game": "Normal Dice",
+  "liars_dice": "Liar’s Dice",
+
+  
   "game_mode": "Game Mode",
   "one_dice": "One Dice",
   "two_dice": "Two Dice",
-   "choose_game": "Choose Game",
-  "liars_dice": "Liar’s Dice",
+
+  
+  "choose_dice_count": "Choose Dice Count",
+
+  
+  "tapToSpin": "Tap anywhere to spin the dice",
+  "diceNumber": "Number: {value}",
+
+  
   "choose_level": "Choose Level",
   "easy": "Easy",
   "medium": "Medium",
   "hard": "Hard",
-   "player_turn": "Player {player}'s Turn",
-  "dice_hidden": "Your dice is hidden",
-  "roll_dice": "Roll Dice",
-  "claim": "Claim",
-  "liar": "Liar",
-   "players_setup": "Players Setup",
+
+  
+  "players_setup": "Players Setup",
   "number_of_players": "Number of Players",
   "player_names": "Player Names",
   "player_n": "Player {number}",
   "start_game": "Start Game",
-   "dice_shown": "Your dice is shown",
-    "round_result": "Round Result",
+
+  
+  "player_turn": "Player {player}'s Turn",
+  "dice_hidden": "Your dice is hidden",
+  "dice_shown": "Your dice is shown",
+  "roll_dice": "Roll Dice",
+  "next": "Next",
+  "claim": "Claim",
+  "liar": "Liar",
+
+  
+  "round_result": "Round Result",
   "winner_is": "{player} wins the round",
   "next_round": "Next Round",
   "end_game": "End Game",
-   "make_claim": "Make a Claim",
-  "confirm": "Confirm"
+
   
+  "make_claim": "Make a Claim",
+  "confirm": "Confirm",
+  "quantity": "Quantity",
+"face": "Face",
+
+
+  
+  "winner": "Winner",
+  "final_standings": "Final Standings",
+  "back_to_home": "Back to Home",
+  "no_standings": "No standings"
 }
