@@ -28,10 +28,26 @@ class LiarsDiceGamePage extends StatelessWidget {
           child: BlocBuilder<LiarsDiceCubit, LiarsDiceState>(
             builder: (context, state) {
               final cubit = context.read<LiarsDiceCubit>();
-              final currentPlayer = state.players[state.currentPlayerIndex];
 
-              final bool isDiceHidden = state.phase != GamePhase.rolling;
-              final bool canRoll = state.phase == GamePhase.rolling;
+              if (state.players.isEmpty) {
+                return const SizedBox();
+              }
+
+              final safeIndex = state.currentPlayerIndex.clamp(
+                0,
+                state.players.length - 1,
+              );
+
+              final currentPlayer = state.players[safeIndex];
+
+              final bool canRoll =
+                  state.phase == GamePhase.rolling &&
+                  !state.rollLocked &&
+                  !state.awaitingNext;
+
+              final bool canNext =
+                  state.phase == GamePhase.rolling && state.awaitingNext;
+
               final bool canClaim =
                   state.phase == GamePhase.betting && !state.showDice;
 
@@ -42,17 +58,14 @@ class LiarsDiceGamePage extends StatelessWidget {
 
               return Column(
                 children: [
-                  // 🔁 Turn Header
                   TurnHeader(
                     text: t.translate(
                       'player_turn',
                       params: {'player': currentPlayer.name},
                     ),
                   ),
-
                   SizedBox(height: 32.h),
 
-                  // 🎲 Dice Area (placeholder مؤقت)
                   Expanded(
                     child: Center(
                       child: state.showDice
@@ -60,13 +73,11 @@ class LiarsDiceGamePage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: currentPlayer.dice.map((value) {
                                 return Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 6.w,
-                                  ),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 6.w),
                                   child: AnimatedDiceView(
                                     face: value,
                                     spinToken: state.spinToken,
-                                    // يتغير مع كل رول
                                     size: 72.w,
                                   ),
                                 );
@@ -84,29 +95,24 @@ class LiarsDiceGamePage extends StatelessWidget {
 
                   SizedBox(height: 24.h),
 
-                  // 🎮 Action Buttons
+                  // ✅ Next يظهر مكان Roll Dice
                   GameActionButtons(
-                    rollLabel: t.translate('roll_dice'),
+                    rollLabel: canNext ? t.translate('next') : t.translate('roll_dice'),
                     claimLabel: t.translate('claim'),
                     liarLabel: t.translate('liar'),
 
-                    // 🎲 Roll (لكل لاعب لوحده)
-                    onRoll: canRoll
-                        ? () {
-                            cubit.rollCurrentPlayer();
-                          }
-                        : null,
+                    // ✅ نفس الزر: Roll أو Next
+                    onRoll: canNext
+                        ? () => cubit.confirmRollNext()
+                        : (canRoll ? () => cubit.rollCurrentPlayer() : null),
 
-                    // 📣 Claim
                     onClaim: canClaim
                         ? () {
                             showClaimSelector(
                               context: context,
                               currentBid: state.currentClaim,
-                              isHardLevel: context
-                                  .read<LiarsDiceCubit>()
-                                  .config
-                                  .onesAreWild,
+                              isHardLevel:
+                                  context.read<LiarsDiceCubit>().config.onesAreWild,
                               maxQuantity: state.players.fold(
                                 0,
                                 (sum, p) => sum + p.dice.length,
@@ -120,7 +126,6 @@ class LiarsDiceGamePage extends StatelessWidget {
                           }
                         : null,
 
-                    // 🚨 Liar
                     onLiar: canLiar
                         ? () {
                             cubit.callLiar();

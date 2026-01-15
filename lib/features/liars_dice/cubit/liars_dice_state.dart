@@ -1,4 +1,3 @@
-// liars_dice_state.dart
 import '../models/claim_model.dart';
 import '../models/game_phase.dart';
 import '../models/player_model.dart';
@@ -15,13 +14,18 @@ class LiarsDiceState {
 
   final bool showDice;
 
-  // ✅ rolling gate + animation trigger
   final List<bool> hasRolled;
   final int spinToken;
 
-  // ✅ game over + standings
   final bool gameOver;
   final List<PlayerModel>? finalStandings;
+
+  // ✅ جديد
+  final bool rollLocked; // يمنع الضغط أثناء اللف/العرض
+  final bool awaitingNext; // بعد الرول نستنى Next
+  final int? pendingNextIndex; // مين اللي بعده يرول
+  final bool pendingAllRolled; // هل الكل رول
+  final int bettingStarterIndex; // مين يبدأ الـ claim (الفائز)
 
   const LiarsDiceState({
     required this.players,
@@ -35,6 +39,13 @@ class LiarsDiceState {
     this.spinToken = 0,
     this.gameOver = false,
     this.finalStandings,
+
+    // ✅ جديد
+    this.rollLocked = false,
+    this.awaitingNext = false,
+    this.pendingNextIndex,
+    this.pendingAllRolled = false,
+    this.bettingStarterIndex = 0,
   });
 
   static const _sentinel = Object();
@@ -51,6 +62,13 @@ class LiarsDiceState {
     int? spinToken,
     bool? gameOver,
     Object? finalStandings = _sentinel,
+
+    // ✅ جديد
+    bool? rollLocked,
+    bool? awaitingNext,
+    Object? pendingNextIndex = _sentinel,
+    bool? pendingAllRolled,
+    int? bettingStarterIndex,
   }) {
     return LiarsDiceState(
       players: players ?? this.players,
@@ -72,6 +90,15 @@ class LiarsDiceState {
       finalStandings: identical(finalStandings, _sentinel)
           ? this.finalStandings
           : finalStandings as List<PlayerModel>?,
+
+      // ✅ جديد
+      rollLocked: rollLocked ?? this.rollLocked,
+      awaitingNext: awaitingNext ?? this.awaitingNext,
+      pendingNextIndex: identical(pendingNextIndex, _sentinel)
+          ? this.pendingNextIndex
+          : pendingNextIndex as int?,
+      pendingAllRolled: pendingAllRolled ?? this.pendingAllRolled,
+      bettingStarterIndex: bettingStarterIndex ?? this.bettingStarterIndex,
     );
   }
 }

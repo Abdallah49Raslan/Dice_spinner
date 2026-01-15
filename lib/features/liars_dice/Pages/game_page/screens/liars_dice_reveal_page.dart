@@ -82,9 +82,10 @@ class LiarsDiceRevealPage extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       onEndGame: () {
-                        Navigator.popUntil(
+                        Navigator.pushNamedAndRemoveUntil(
                           context,
-                          ModalRoute.withName('/home'),
+                          '/home',
+                          (route) => false,
                         );
                       },
                     ),
