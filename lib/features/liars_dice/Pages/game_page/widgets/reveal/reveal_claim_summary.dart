@@ -43,6 +43,13 @@ class RevealClaimSummary extends StatelessWidget {
     final t = LocalizationHelper.of(context);
     final counts = _calculateCounts();
 
+    final requiredQty = claim.quantity;
+    final actual = counts.total;
+
+    final double progress = requiredQty <= 0
+        ? 0
+        : (actual / requiredQty).clamp(0.0, 1.0);
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -53,7 +60,6 @@ class RevealClaimSummary extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // عنوان
           Text(
             t.translate('claim'),
             style: TextStyle(
@@ -62,12 +68,10 @@ class RevealClaimSummary extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-
           SizedBox(height: 8.h),
 
-          // claim نفسه
           Text(
-            '${t.translate('quantity')}: ${claim.quantity}   •   ${t.translate('face')}: ${claim.face}',
+            '${t.translate('quantity')}: $requiredQty   •   ${t.translate('face')}: ${claim.face}',
             style: TextStyle(
               color: Colors.white,
               fontSize: 16.sp,
@@ -77,34 +81,57 @@ class RevealClaimSummary extends StatelessWidget {
 
           SizedBox(height: 14.h),
 
-          // عدد الوش المطلوب
+          // تفاصيل العد قبل الـ actual
           Text(
             '${t.translate('face')} ${claim.face}: ${counts.faceCount}',
             style: TextStyle(color: Colors.white70, fontSize: 14.sp),
           ),
-
-          // عدد الـ wild
           if (onesAreWild && claim.face != 1)
             Text(
               '${t.translate('wild_ones')}: ${counts.wildCount}',
               style: TextStyle(color: Colors.white70, fontSize: 14.sp),
             ),
 
-          SizedBox(height: 6.h),
+          SizedBox(height: 10.h),
 
-          // الإجمالي
-          Text(
-            '${t.translate('actual_count')}: ${counts.total}',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15.sp,
-              fontWeight: FontWeight.w600,
+          // ✅ Progress bar + أرقام
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${t.translate('actual_count')}: $actual',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                '$actual / $requiredQty',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+
+          ClipRRect(
+            borderRadius: BorderRadius.circular(999.r),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 10.h,
+              backgroundColor: Colors.white.withOpacity(0.12),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                claimIsTrue ? Colors.greenAccent : Colors.redAccent,
+              ),
             ),
           ),
 
-          SizedBox(height: 8.h),
+          SizedBox(height: 10.h),
 
-          // النتيجة
           Text(
             claimIsTrue
                 ? t.translate('claim_true')

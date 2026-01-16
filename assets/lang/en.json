@@ -60,6 +60,8 @@
   "actual_count": "Actual count",
 "claim_true": "Claim is TRUE",
 "claim_false": "Claim is FALSE",
-"wild_ones": "Wild (1)"
+"wild_ones": "Wild (1)",
+"last_claim": "Last claim",
+  "wild": "Wild"
 
 }

@@ -33,7 +33,11 @@ class PlayerDiceView extends StatelessWidget {
         }
 
         final diceCount = dice.length;
-        final spacing = 12.w;
+
+        // ✅ فصلنا المسافات: أفقية للـ row ورأسية بين الصفوف
+        final horizontalSpacing = 18.w;
+        final verticalSpacing = 16.h;
+
         final availableWidth = constraints.maxWidth;
 
         // عدد النرد في الصف الواحد حسب الشكل المطلوب
@@ -41,8 +45,9 @@ class PlayerDiceView extends StatelessWidget {
             ? 3
             : (diceCount == 4 ? 2 : diceCount.clamp(1, 4));
 
+        // ✅ استخدمنا horizontalSpacing في الحساب
         final maxPerDice =
-            (availableWidth - (spacing * (maxInRow - 1))) / maxInRow;
+            (availableWidth - (horizontalSpacing * (maxInRow - 1))) / maxInRow;
 
         final desired = availableWidth * DiceConstants.diceSizeRatio;
 
@@ -68,7 +73,7 @@ class PlayerDiceView extends StatelessWidget {
             children: [
               for (int i = 0; i < rowDice.length; i++) ...[
                 buildDie(rowDice[i]),
-                if (i != rowDice.length - 1) SizedBox(width: spacing),
+                if (i != rowDice.length - 1) SizedBox(width: horizontalSpacing),
               ],
             ],
           );
@@ -84,10 +89,7 @@ class PlayerDiceView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 buildRow(row1),
-
-                // ✅ زوّدنا المسافة الرأسية عشان مايبقاش فيه تداخل/ظل غريب
-                SizedBox(height: spacing + 10.h),
-
+                SizedBox(height: verticalSpacing),
                 buildRow(row2),
               ],
             ),
@@ -104,7 +106,7 @@ class PlayerDiceView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 buildRow(row1),
-                SizedBox(height: spacing + 10.h),
+                SizedBox(height: verticalSpacing),
                 buildRow(row2),
               ],
             ),
@@ -115,8 +117,8 @@ class PlayerDiceView extends StatelessWidget {
         return Center(
           child: Wrap(
             alignment: WrapAlignment.center,
-            spacing: spacing,
-            runSpacing: spacing + 10.h, // ✅ نفس فكرة زيادة المسافة الرأسية
+            spacing: horizontalSpacing,
+            runSpacing: verticalSpacing,
             children: dice.map(buildDie).toList(),
           ),
         );

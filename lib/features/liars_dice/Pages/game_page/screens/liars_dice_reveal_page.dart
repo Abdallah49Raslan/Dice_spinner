@@ -107,6 +107,10 @@ class LiarsDiceRevealPage extends StatelessWidget {
                       diceValues: player.dice,
                       isWinner: player.name == winner.name,
                       isLoser: player.name == loser.name,
+
+                      // ✅ جديد
+                      claimFace: result.claim.face,
+                      onesAreWild: onesAreWild,
                     );
                   },
                 );

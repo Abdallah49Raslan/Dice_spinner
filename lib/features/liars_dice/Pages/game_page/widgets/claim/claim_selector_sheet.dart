@@ -1,3 +1,7 @@
+// ignore_for_file: deprecated_member_use
+
+import 'package:dice/features/liars_dice/Pages/game_page/widgets/claim/last_claim_helper.dart';
+import 'package:dice/features/liars_dice/Pages/game_page/widgets/claim/pill_label.dart';
 import 'package:dice/features/liars_dice/models/claim_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,6 +21,7 @@ void showClaimSelector({
   showModalBottomSheet(
     context: context,
     backgroundColor: AppColors.scaffoldBackground,
+    isScrollControlled: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
@@ -28,19 +33,37 @@ void showClaimSelector({
 
       return StatefulBuilder(
         builder: (context, setState) {
-          final int minQuantity = currentBid?.quantity ?? 1;
+          final minQuantity = currentBid?.quantity ?? 1;
 
-          final int minFace =
+          final minFace =
               (currentBid != null && selectedQuantity == currentBid.quantity)
               ? currentBid.face
               : 1;
 
-          return Padding(
-            padding: EdgeInsets.all(24.w),
-            child: SingleChildScrollView(
+          return SafeArea(
+            top: false,
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: 20.w,
+                right: 20.w,
+                top: 16.h,
+                bottom: 16.h + MediaQuery.of(context).viewInsets.bottom,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // ✅ Handle
+                  Container(
+                    width: 44.w,
+                    height: 5.h,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.18),
+                      borderRadius: BorderRadius.circular(999.r),
+                    ),
+                  ),
+
+                  SizedBox(height: 12.h),
+
                   Text(
                     t.translate('make_claim'),
                     style: TextStyle(
@@ -50,35 +73,67 @@ void showClaimSelector({
                     ),
                   ),
 
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 12.h),
 
-                  ClaimQuantitySelector(
-                    selected: selectedQuantity,
-                    minQuantity: minQuantity,
-                    maxQuantity: maxQuantity,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedQuantity = value;
-                        if (selectedFace < minFace) {
-                          selectedFace = minFace;
-                        }
-                      });
-                    },
+                  // ✅ محتوى قابل للسكرول (بدون ما نزود SizedBox كتير)
+                  Flexible(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (currentBid != null) ...[
+                            LastClaimCard(
+                              title: t.translate('last_claim'),
+                              text:
+                                  '${t.translate('quantity')}: ${currentBid.quantity}  •  ${t.translate('face')}: ${currentBid.face}',
+                            ),
+                            SizedBox(height: 10.h),
+                          ],
+
+                          if (onesAreWild) ...[
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: PillLabel(
+                                text: '1 = ${t.translate('wild')}',
+                              ),
+                            ),
+                            SizedBox(height: 12.h),
+                          ],
+
+                          ClaimQuantitySelector(
+                            selected: selectedQuantity,
+                            minQuantity: minQuantity,
+                            maxQuantity: maxQuantity,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedQuantity = value;
+                                if (selectedFace < minFace) {
+                                  selectedFace = minFace;
+                                }
+                              });
+                            },
+                          ),
+
+                          SizedBox(height: 16.h),
+
+                          ClaimFaceSelector(
+                            selected: selectedFace,
+                            minFace: minFace,
+                            forbidOne: onesAreWild,
+                            onChanged: (value) =>
+                                setState(() => selectedFace = value),
+                          ),
+
+                          SizedBox(height: 8.h),
+                        ],
+                      ),
+                    ),
                   ),
 
-                  SizedBox(height: 24.h),
+                  SizedBox(height: 12.h),
 
-                  ClaimFaceSelector(
-                    selected: selectedFace,
-                    minFace: minFace,
-                    forbidOne: onesAreWild,
-                    onChanged: (value) {
-                      setState(() => selectedFace = value);
-                    },
-                  ),
-
-                  SizedBox(height: 30.h),
-
+                  // ✅ زر ثابت تحت
                   SizedBox(
                     width: double.infinity,
                     height: 52.h,

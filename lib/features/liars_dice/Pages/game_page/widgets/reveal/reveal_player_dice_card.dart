@@ -7,13 +7,24 @@ class RevealPlayerDiceCard extends StatelessWidget {
   final bool isWinner;
   final bool isLoser;
 
+  final int claimFace;
+  final bool onesAreWild;
+
   const RevealPlayerDiceCard({
     super.key,
     required this.playerName,
     required this.diceValues,
     this.isWinner = false,
     this.isLoser = false,
+    required this.claimFace,
+    required this.onesAreWild,
   });
+
+  bool _isMatched(int value) {
+    if (value == claimFace) return true;
+    if (onesAreWild && value == 1 && claimFace != 1) return true;
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,30 +62,83 @@ class RevealPlayerDiceCard extends StatelessWidget {
               fontWeight: isWinner ? FontWeight.bold : FontWeight.w500,
             ),
           ),
-
           SizedBox(height: 12.h),
 
-          // 🎲 Dice Row
+          // 🎲 Dice Row (with highlight)
           Wrap(
             spacing: 8.w,
             runSpacing: 8.h,
             children: diceValues.map((value) {
-              return Container(
-                width: 44.w,
-                height: 44.w,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  value.toString(),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.sp,
+              final matched = _isMatched(value);
+              final isWildOne = onesAreWild && value == 1 && claimFace != 1;
+
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeOut,
+                    width: 44.w,
+                    height: 44.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: matched
+                          ? Colors.white
+                          : Colors.white.withOpacity(0.12),
+                      boxShadow: matched
+                          ? [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.25),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                          : [],
+                      border: matched
+                          ? Border.all(
+                              color: isWildOne
+                                  ? Colors.amberAccent
+                                  : Colors.white,
+                              width: isWildOne ? 2 : 1,
+                            )
+                          : null,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      value.toString(),
+                      style: TextStyle(
+                        color: matched ? Colors.black : Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.sp,
+                      ),
+                    ),
                   ),
-                ),
+
+                  // ✅ علامة W لو 1 اتحسب Wild
+                  if (matched && isWildOne)
+                    Positioned(
+                      right: -4.w,
+                      bottom: -4.h,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.amberAccent,
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: Text(
+                          'W',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               );
             }).toList(),
           ),

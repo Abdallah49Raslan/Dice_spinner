@@ -21,6 +21,18 @@ class ClaimQuantitySelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = LocalizationHelper.of(context);
 
+    // ✅ Dynamic grid height based on how many rows we actually have
+    const crossAxisCount = 6;
+    final itemSize = 44.w; // approximate circle size
+    final mainSpacing = 10.h;
+    final crossSpacing = 10.w;
+
+    final totalRows = (maxQuantity / crossAxisCount).ceil();
+    final visibleRows = totalRows.clamp(1, 3); // show up to 3 rows, then scroll
+
+    final gridHeight =
+        (visibleRows * itemSize) + ((visibleRows - 1) * mainSpacing);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -30,17 +42,16 @@ class ClaimQuantitySelector extends StatelessWidget {
         ),
         SizedBox(height: 12.h),
 
-        // ✅ مساحة ثابتة + سكرول عشان 30 رقم
         SizedBox(
-          height: 150.h,
+          height: gridHeight,
           child: GridView.builder(
             padding: EdgeInsets.zero,
             physics: const BouncingScrollPhysics(),
             itemCount: maxQuantity,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 6, // 6 أرقام في الصف (مناسبة للموبايل)
-              mainAxisSpacing: 10.h,
-              crossAxisSpacing: 10.w,
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: mainSpacing,
+              crossAxisSpacing: crossSpacing,
               childAspectRatio: 1,
             ),
             itemBuilder: (context, index) {
@@ -86,8 +97,8 @@ class ClaimQuantitySelector extends StatelessWidget {
           ),
         ),
 
-        // ✅ (اختياري لكن مفيد) سطر توضيح
         SizedBox(height: 8.h),
+
         Text(
           '${t.translate('quantity')}: $selected / $maxQuantity',
           style: TextStyle(color: Colors.white38, fontSize: 12.sp),
