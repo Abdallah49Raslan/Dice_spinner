@@ -54,5 +54,10 @@
   "winner": "الفائز",
   "final_standings": "الترتيب النهائي",
   "back_to_home": "العودة للرئيسية",
-  "no_standings": "لا توجد نتائج"
+  "no_standings": "لا توجد نتائج",
+
+   "actual_count": "العدد الفعلي",
+  "claim_true": "المزايدة صحيحة",
+  "claim_false": "المزايدة خاطئة",
+  "wild_ones": "الواحد (وايلد)"
 }

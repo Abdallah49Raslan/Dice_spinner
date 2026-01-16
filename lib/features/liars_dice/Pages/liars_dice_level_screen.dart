@@ -33,7 +33,6 @@ class LiarsDiceLevelScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               SizedBox(height: 30.h),
 
               // Easy
@@ -51,20 +50,32 @@ class LiarsDiceLevelScreen extends StatelessWidget {
 
               SizedBox(height: 16.h),
 
-              // Medium (Disabled)
+              // Medium
               OptionButton(
                 icon: Icons.looks_3,
                 label: t.translate('medium'),
-                onTap: null,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/liars_dice_game',
+                    arguments: {'players': players, 'level': GameLevel.medium},
+                  );
+                },
               ),
 
               SizedBox(height: 16.h),
 
-              // Hard (Disabled)
+              // Hard
               OptionButton(
                 icon: Icons.looks_5,
                 label: t.translate('hard'),
-                onTap: null,
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/liars_dice_game',
+                    arguments: {'players': players, 'level': GameLevel.hard},
+                  );
+                },
               ),
             ],
           ),
