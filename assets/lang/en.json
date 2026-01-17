@@ -62,6 +62,11 @@
 "claim_false": "Claim is FALSE",
 "wild_ones": "Wild (1)",
 "last_claim": "Last claim",
-  "wild": "Wild"
+  "wild": "Wild",
+
+   "betting_started": "Betting started",
+  "claims_history": "Claim history",
+  "no_claims_yet": "No claims yet",
+  "player_claim_line": "{player} claimed {qty} of face {face}"
 
 }

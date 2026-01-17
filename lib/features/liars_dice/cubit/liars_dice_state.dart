@@ -2,6 +2,8 @@ import '../models/claim_model.dart';
 import '../models/game_phase.dart';
 import '../models/player_model.dart';
 import '../models/round_result.dart';
+import '../models/claim_history_item.dart';
+
 
 class LiarsDiceState {
   final List<PlayerModel> players;
@@ -28,6 +30,8 @@ class LiarsDiceState {
   final int? pendingNextIndex; // مين اللي بعده يرول
   final bool pendingAllRolled; // هل الكل رول
   final int bettingStarterIndex; // مين يبدأ الـ claim (الفائز)
+  final List<ClaimHistoryItem> claimHistory;
+
   
 
   const LiarsDiceState({
@@ -43,6 +47,8 @@ class LiarsDiceState {
     this.gameOver = false,
     this.finalStandings,
     this.diceAnimating = false,
+    required this.claimHistory,
+
 
 
 
@@ -76,6 +82,8 @@ class LiarsDiceState {
     bool? pendingAllRolled,
     int? bettingStarterIndex,
     bool? diceAnimating,
+    List<ClaimHistoryItem>? claimHistory,
+
 
   }) {
     return LiarsDiceState(
@@ -108,6 +116,8 @@ class LiarsDiceState {
       pendingAllRolled: pendingAllRolled ?? this.pendingAllRolled,
       bettingStarterIndex: bettingStarterIndex ?? this.bettingStarterIndex,
       diceAnimating: diceAnimating ?? this.diceAnimating,
+      claimHistory: claimHistory ?? this.claimHistory,
+
 
     );
   }

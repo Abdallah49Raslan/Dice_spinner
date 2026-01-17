@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../models/claim_history_item.dart';
 import '../models/claim_model.dart';
 import '../models/game_config.dart';
 import '../models/game_phase.dart';
@@ -16,7 +17,7 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
   final List<PlayerModel> _eliminated = [];
 
   LiarsDiceCubit({required List<String> playerNames, required this.config})
-    : super(_buildInitialState(playerNames, config));
+      : super(_buildInitialState(playerNames, config));
 
   static LiarsDiceState _buildInitialState(
     List<String> playerNames,
@@ -31,7 +32,6 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
         )
         .toList();
 
-    // ✅ أول راوند: Starter عشوائي بدل Player1 دائمًا
     final starter = players.isEmpty ? 0 : Random().nextInt(players.length);
 
     return LiarsDiceState(
@@ -50,12 +50,16 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
       awaitingNext: false,
       pendingNextIndex: null,
       pendingAllRolled: false,
-      bettingStarterIndex: starter, // ✅ الفائز/الستارتر يبدأ claim
+      bettingStarterIndex: starter,
+      diceAnimating: false,
+
+      // ✅ NEW
+      claimHistory: const [],
     );
   }
 
   // ------------------------------------------------------------
-  // ROLL (no delay). After roll -> show dice + lock + awaitingNext
+  // ROLL
   // ------------------------------------------------------------
   void rollCurrentPlayer() {
     if (state.gameOver) return;
@@ -69,10 +73,7 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
     final players = [...state.players];
     final current = players[idx];
 
-    final newDice = List.generate(
-      current.dice.length,
-      (_) => _random.nextInt(6) + 1,
-    );
+    final newDice = List.generate(current.dice.length, (_) => _random.nextInt(6) + 1);
     players[idx] = current.copyWith(dice: newDice);
 
     final rolled = (state.hasRolled.length == players.length)
@@ -104,13 +105,10 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
         awaitingNext: true,
         pendingNextIndex: nextIndex,
         pendingAllRolled: allRolled,
-
-        // ✅ جديد
         diceAnimating: true,
       ),
     );
 
-    // ✅ بعد ما الأنيميشن يخلص فعلاً
     Future.delayed(const Duration(milliseconds: 900), () {
       if (isClosed) return;
       emit(state.copyWith(diceAnimating: false));
@@ -118,23 +116,18 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
   }
 
   // ------------------------------------------------------------
-  // NEXT (after showing dice) - hide dice and move forward
+  // NEXT
   // ------------------------------------------------------------
   void confirmRollNext() {
     if (state.gameOver) return;
     if (state.phase != GamePhase.rolling) return;
     if (!state.awaitingNext) return;
-
-     if (state.diceAnimating) return;
+    if (state.diceAnimating) return;
 
     final allRolled = state.pendingAllRolled;
 
     if (allRolled) {
-      // ✅ ابدأ betting من الفائز (bettingStarterIndex)
-      final starter = _safeIndex(
-        state.bettingStarterIndex,
-        state.players.length,
-      );
+      final starter = _safeIndex(state.bettingStarterIndex, state.players.length);
 
       emit(
         state.copyWith(
@@ -148,6 +141,9 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
           currentClaim: null,
           callerIndex: null,
           lastRoundResult: null,
+
+          // ✅ NEW: reset history each betting round
+          claimHistory: const [],
         ),
       );
       return;
@@ -170,7 +166,7 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
   }
 
   // ------------------------------------------------------------
-  // BETTING (raise only)
+  // BETTING (raise only) + HISTORY
   // ------------------------------------------------------------
   void makeClaim(ClaimModel newBid) {
     if (state.gameOver) return;
@@ -181,7 +177,7 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
         state.hasRolled.isNotEmpty && state.hasRolled.every((e) => e);
     if (!allRolled) return;
 
-    // Hard only: forbid bidding on face=1 (per your rule)
+    // hard: forbid bidding on 1 (your rule)
     if (config.onesAreWild && newBid.face == 1) return;
 
     final prev = state.currentClaim;
@@ -192,9 +188,19 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
       if (!higherQty && !sameQtyHigherFace) return;
     }
 
+    // ✅ NEW: add to history (current player is the claimer BEFORE we move index)
+    final claimerIndex = _safeIndex(state.currentPlayerIndex, state.players.length);
+    final claimerName = state.players[claimerIndex].name;
+
+    final newHistory = [
+      ...state.claimHistory,
+      ClaimHistoryItem(playerName: claimerName, claim: newBid),
+    ];
+
     emit(
       state.copyWith(
         currentClaim: newBid,
+        claimHistory: newHistory,
         currentPlayerIndex:
             (state.currentPlayerIndex + 1) % state.players.length,
         phase: GamePhase.betting,
@@ -203,7 +209,7 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
   }
 
   // ------------------------------------------------------------
-  // CALL LIAR => reveal result
+  // CALL LIAR
   // ------------------------------------------------------------
   void callLiar() {
     if (state.gameOver) return;
@@ -239,8 +245,6 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
 
   // ------------------------------------------------------------
   // NEXT ROUND
-  // - loser loses die, may be removed
-  // - winner starts next round (rolling) AND starts betting later
   // ------------------------------------------------------------
   void nextRound() {
     if (state.gameOver) return;
@@ -262,9 +266,8 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
     bool removed = false;
 
     if (newDiceCount > 0) {
-      updatedPlayers[loserIndex] = loser.copyWith(
-        dice: loser.dice.sublist(0, newDiceCount),
-      );
+      updatedPlayers[loserIndex] =
+          loser.copyWith(dice: loser.dice.sublist(0, newDiceCount));
     } else {
       _eliminated.add(loser);
       updatedPlayers.removeAt(loserIndex);
@@ -290,6 +293,9 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
           pendingAllRolled: false,
           gameOver: true,
           finalStandings: standings,
+
+          // ✅ NEW
+          claimHistory: const [],
         ),
       );
       return;
@@ -316,7 +322,10 @@ class LiarsDiceCubit extends Cubit<LiarsDiceState> {
         awaitingNext: false,
         pendingNextIndex: null,
         pendingAllRolled: false,
-        bettingStarterIndex: safeWinner, // ✅ الفائز يبدأ claim بعد كل الرول
+        bettingStarterIndex: safeWinner,
+
+        // ✅ NEW: clear history for new round
+        claimHistory: const [],
       ),
     );
   }

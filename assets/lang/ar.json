@@ -62,5 +62,10 @@
   "wild_ones": "الواحد (وايلد)",
   
  "last_claim": "آخر مزايدة",
-  "wild": "وايلد"
+  "wild": "وايلد",
+
+  "betting_started": "بدأت المزايدة",
+  "claims_history": "سجل المزايدات",
+  "no_claims_yet": "مفيش مزايدات لسه",
+  "player_claim_line": "{player} زايد على {qty} من الوجه {face}"
 }

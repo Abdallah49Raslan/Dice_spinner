@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/helper/localization_helper.dart';
 import '../../../../../core/theme/app_colors.dart';
+import '../widgets/game/betting_history_panel.dart';
 import '../widgets/game/game_action_buttons.dart';
 import '../widgets/game/turn_header.dart';
 
@@ -73,12 +74,14 @@ class LiarsDiceGamePage extends StatelessWidget {
                   SizedBox(height: 32.h),
 
                   Expanded(
-                    child: PlayerDiceView(
-                      showDice: state.showDice,
-                      dice: currentPlayer.dice,
-                      spinToken: state.spinToken,
-                      hiddenText: t.translate('dice_hidden'),
-                    ),
+                    child: (state.phase == GamePhase.betting && !state.showDice)
+                        ? BettingHistoryPanel(history: state.claimHistory)
+                        : PlayerDiceView(
+                            showDice: state.showDice,
+                            dice: currentPlayer.dice,
+                            spinToken: state.spinToken,
+                            hiddenText: t.translate('dice_hidden'),
+                          ),
                   ),
 
                   SizedBox(height: 24.h),
