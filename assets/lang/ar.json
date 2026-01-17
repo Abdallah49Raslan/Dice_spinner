@@ -67,5 +67,18 @@
   "betting_started": "بدأت المزايدة",
   "claims_history": "سجل المزايدات",
   "no_claims_yet": "مفيش مزايدات لسه",
-  "player_claim_line": "{player} زايد على {qty} من الوجه {face}"
+  "player_claim_line": "{player} زايد على {qty} من الوجه {face}",
+
+  "recent_players_lists": "آخر قوائم اللاعبين",
+  "players_list": "قائمة لاعبين",
+  "players": "لاعبين",
+  "loading": "جاري التحميل...",
+
+   "use": "استخدام",
+  "delete": "حذف",
+
+  
+  "use_list": "استخدم القائمة",
+  "delete_list": "حذف القائمة",
+  "clear_all": "مسح الكل"
 }

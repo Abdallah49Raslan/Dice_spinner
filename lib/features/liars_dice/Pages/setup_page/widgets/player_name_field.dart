@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PlayerNameField extends StatelessWidget {
-  final TextEditingController controller;
+  final String value;
   final String hint;
+  final ValueChanged<String> onChanged;
 
   const PlayerNameField({
     super.key,
-    required this.controller,
+    required this.value,
     required this.hint,
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
+    return TextFormField(
+      initialValue: value,
+      onChanged: onChanged,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         hintText: hint,

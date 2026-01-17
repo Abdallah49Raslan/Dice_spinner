@@ -67,6 +67,18 @@
    "betting_started": "Betting started",
   "claims_history": "Claim history",
   "no_claims_yet": "No claims yet",
-  "player_claim_line": "{player} claimed {qty} of face {face}"
+  "player_claim_line": "{player} claimed {qty} of face {face}",
+
+   "recent_players_lists": "Recent Player Lists",
+  "players_list": "Players List",
+  "players": "Players",
+  "loading": "Loading...",
+
+    "use": "Use",
+  "delete": "Delete",
+
+   "use_list": "Use list",
+  "delete_list": "Delete list",
+  "clear_all": "Clear all"
 
 }
