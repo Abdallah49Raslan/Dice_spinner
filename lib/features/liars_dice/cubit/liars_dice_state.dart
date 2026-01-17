@@ -19,6 +19,8 @@ class LiarsDiceState {
 
   final bool gameOver;
   final List<PlayerModel>? finalStandings;
+  final bool diceAnimating; // ✅ جديد
+
 
   // ✅ جديد
   final bool rollLocked; // يمنع الضغط أثناء اللف/العرض
@@ -26,6 +28,7 @@ class LiarsDiceState {
   final int? pendingNextIndex; // مين اللي بعده يرول
   final bool pendingAllRolled; // هل الكل رول
   final int bettingStarterIndex; // مين يبدأ الـ claim (الفائز)
+  
 
   const LiarsDiceState({
     required this.players,
@@ -39,6 +42,9 @@ class LiarsDiceState {
     this.spinToken = 0,
     this.gameOver = false,
     this.finalStandings,
+    this.diceAnimating = false,
+
+
 
     // ✅ جديد
     this.rollLocked = false,
@@ -69,6 +75,8 @@ class LiarsDiceState {
     Object? pendingNextIndex = _sentinel,
     bool? pendingAllRolled,
     int? bettingStarterIndex,
+    bool? diceAnimating,
+
   }) {
     return LiarsDiceState(
       players: players ?? this.players,
@@ -99,6 +107,8 @@ class LiarsDiceState {
           : pendingNextIndex as int?,
       pendingAllRolled: pendingAllRolled ?? this.pendingAllRolled,
       bettingStarterIndex: bettingStarterIndex ?? this.bettingStarterIndex,
+      diceAnimating: diceAnimating ?? this.diceAnimating,
+
     );
   }
 }

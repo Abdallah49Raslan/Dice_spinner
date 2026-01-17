@@ -58,7 +58,7 @@ class DiceFaceView extends StatelessWidget {
             color: showBackground
                 ? faceColor.withOpacity(DiceConstants.diceBackgroundOpacity)
                 : AppColors.diceBackgroundOverlay,
-            borderRadius: BorderRadius.circular(20.r),
+            borderRadius: BorderRadius.circular(24.r),
             border: Border.all(
               color: showBackground
                   ? faceColor.withOpacity(DiceConstants.diceBorderOpacity)
@@ -68,9 +68,9 @@ class DiceFaceView extends StatelessWidget {
             boxShadow: showBackground
                 ? [
                     BoxShadow(
-                      color: faceColor.withOpacity(0.25),
-                      blurRadius: 20.r,
-                      offset: const Offset(0, 5),
+                      color: faceColor.withOpacity(0.30),
+                      blurRadius: 30,
+                      offset: const Offset(0, 10),
                     ),
                   ]
                 : [],

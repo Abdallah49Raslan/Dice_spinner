@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PipGrid extends StatelessWidget {
   final List<int> filledIndices;
@@ -13,34 +12,45 @@ class PipGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        mainAxisSpacing: 8.w,
-        crossAxisSpacing: 8.w,
-      ),
-      itemCount: 9,
-      itemBuilder: (context, index) {
-        final isFilled = filledIndices.contains(index);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final size = constraints.biggest.shortestSide;
 
-        return AnimatedScale(
-          scale: isFilled ? 1 : 0,
-          duration: const Duration(milliseconds: 180),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: pipColor,
-              boxShadow: [
-                BoxShadow(
-                  // ignore: deprecated_member_use
-                  color: Colors.black.withOpacity(0.25),
-                  blurRadius: 8.r,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
+        // ✅ spacing نسبي من حجم النرد (بدل 8.w)
+        final spacing = (size * 0.08).clamp(2.0, 10.0);
+        final blur = (size * 0.10).clamp(2.0, 10.0);
+        final yOffset = (size * 0.03).clamp(1.0, 4.0);
+
+        return GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.zero,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: spacing,
+            crossAxisSpacing: spacing,
           ),
+          itemCount: 9,
+          itemBuilder: (context, index) {
+            final isFilled = filledIndices.contains(index);
+
+            return AnimatedScale(
+              scale: isFilled ? 1 : 0,
+              duration: const Duration(milliseconds: 180),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: pipColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: blur,
+                      offset: Offset(0, yOffset),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );

@@ -44,7 +44,9 @@ class LiarsDiceGamePage extends StatelessWidget {
                   !state.awaitingNext;
 
               final canNext =
-                  state.phase == GamePhase.rolling && state.awaitingNext;
+                  state.phase == GamePhase.rolling &&
+                  state.awaitingNext &&
+                  !state.diceAnimating;
 
               final canClaim =
                   state.phase == GamePhase.betting && !state.showDice;

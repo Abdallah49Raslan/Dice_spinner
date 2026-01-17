@@ -23,6 +23,10 @@ class AnimatedDiceView extends StatefulWidget {
   final FacePicker tickFacePicker;
   final FacePicker? finishFacePicker;
 
+  /// ✅ جديد: Callback لما السبين يبدأ/يخلص (عشان تمنع Next أثناء اللف)
+  final VoidCallback? onSpinStart;
+  final VoidCallback? onSpinEnd;
+
   final FaceChanged? onTickFace;
   final FaceChanged? onFinishFace;
 
@@ -38,6 +42,10 @@ class AnimatedDiceView extends StatefulWidget {
     this.size,
     this.showBackground = true,
     this.showLabel = false,
+
+    // ✅ جديد
+    this.onSpinStart,
+    this.onSpinEnd,
   });
 
   @override
@@ -51,6 +59,9 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
 
   int _tempFace = 1;
   bool _spinning = false;
+
+  // ✅ جديد: نخلي الـ ticker مرجّع عشان نوقفه في dispose
+  Ticker? _ticker;
 
   @override
   void initState() {
@@ -93,25 +104,48 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
 
   Future<void> _startSpin() async {
     if (_spinning) return;
+    if (!mounted) return;
+
     _spinning = true;
+    widget.onSpinStart?.call(); // ✅ جديد
 
     _controller.reset();
 
     int lastTick = 0;
-    final ticker = Ticker((elapsed) {
+
+    // ✅ جديد: خزّن الـ ticker ووقف أي قديم
+    _ticker?.stop();
+    _ticker?.dispose();
+    _ticker = null;
+
+    _ticker = Ticker((elapsed) {
+      if (!mounted) return;
+
       if (elapsed.inMilliseconds - lastTick >= 100) {
         lastTick = elapsed.inMilliseconds;
+
         final next = _sanitizeFace(widget.tickFacePicker());
+
+        if (!mounted) return;
         setState(() => _tempFace = next);
+
         widget.onTickFace?.call(next);
       }
     });
 
-    ticker.start();
-    await _controller.forward();
+    _ticker!.start();
 
-    ticker.stop();
-    ticker.dispose();
+    // ✅ forward ممكن يرمي TickerCanceled لو اتعمل dispose أثناء الأنيميشن
+    try {
+      await _controller.forward();
+    } on TickerCanceled {
+      // dispose حصل أثناء الأنيميشن
+      return;
+    }
+
+    _ticker?.stop();
+    _ticker?.dispose();
+    _ticker = null;
 
     if (!mounted) return;
 
@@ -119,16 +153,23 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
       widget.finishFacePicker?.call() ?? widget.face,
     );
 
+    if (!mounted) return;
     setState(() {
       _tempFace = finalFace;
       _spinning = false;
     });
 
     widget.onFinishFace?.call(finalFace);
+    widget.onSpinEnd?.call(); // ✅ جديد
   }
 
   @override
   void dispose() {
+    // ✅ مهم جدًا: وقف الـ ticker قبل dispose
+    _ticker?.stop();
+    _ticker?.dispose();
+    _ticker = null;
+
     _controller.dispose();
     super.dispose();
   }
@@ -138,7 +179,7 @@ class _AnimatedDiceViewState extends State<AnimatedDiceView>
     final diceWidget = DiceFaceView(
       face: _tempFace,
       rotation: _rotation,
-      size: widget.size, // ✅ null = DiceFaceView يحسب الحجم بنفسه
+      size: widget.size,
       showBackground: widget.showBackground,
       showLabel: widget.showLabel,
     );
