@@ -1,7 +1,8 @@
 // ignore_for_file: depend_on_referenced_packages
-import 'package:dice/app/app_routes.dart';
+import 'package:dice/app/di/service_locator.dart';
 import 'package:dice/app/my_dice_app.dart';
-import 'package:dice/features/normal_dice/cubit/dice_cubit.dart';
+import 'package:dice/app/routes/app_routes.dart';
+import 'package:dice/features/normal_dice/presentation/cubit/dice_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,8 @@ Future<void> main() async {
   // ✅ Hive init using app documents directory
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
+    await initServiceLocator();
+
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
