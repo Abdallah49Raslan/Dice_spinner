@@ -73,19 +73,26 @@ The project is designed with scalability in mind to support future features such
 ---
 
 ## 🧩 Project Structure
+
 lib/
-├── core/
-│ ├── theme/
-│ ├── helpers/
-│ └── widgets/
-├── features/
-│ ├── home/
-│ ├── normal_dice/
-│ └── liars_dice/
-│ ├── data/
-│ ├── domain/
-│ └── presentation/
-└── main.dart
+ ├── core/
+ │   ├── theme/
+ │   ├── helpers/
+ │   └── widgets/
+ ├── features/
+ │   ├── home/
+ │   ├── normal_dice/
+ │   └── liars_dice/
+ │       ├── data/
+ │       ├── domain/
+ │       └── presentation/
+ └── main.dart
+
+---
+
+## 📸 Screenshots
+
+<p align="center"> <img src="assets/screenshots/home.png" width="220"/> <img src="assets/screenshots/single_dice.png" width="220"/> <img src="assets/screenshots/two_dice.png" width="220"/> </p> <p align="center"> <img src="assets/screenshots/liars_setup.png" width="220"/> <img src="assets/screenshots/liars_level.png" width="220"/> <img src="assets/screenshots/liars_game_dice.png" width="220"/> </p> <p align="center"> <img src="assets/screenshots/liars_game.png" width="220"/> <img src="assets/screenshots/liars_reveal.png" width="220"/> <img src="assets/screenshots/winner.png" width="220"/> </p>
 
 ---
 
@@ -97,28 +104,3 @@ lib/
 - Sound effects & haptic feedback
 - Dark / Light theme toggle
 - iOS support improvements
-
----
-## 📸 Screenshots
-
-| Home | Single Dice | Two Dice |
-|------|-------------|----------|
-| ![](assets/screenshots/home.png) | ![](assets/screenshots/single_dice.png) | ![](assets/screenshots/two_dice.png) |
-
-| Liar’s Dice Setup | Liar’s Dice Level | Dice Roll | Game Play | Reveal |
-|------------------|------------------|-----------|-----------|--------|
-| ![](assets/screenshots/liars_setup.png) | ![](assets/screenshots/liars_level.png) | ![](assets/screenshots/liars_game_dice.png) | ![](assets/screenshots/liars_game.png) | ![](assets/screenshots/liars_reveal.png) |
-
-| Winner Screen |
-|---------------|
-| ![](assets/screenshots/winner.png) |
-
-
----
-
-## 👨‍💻 Developer
-
-**Abdallah Raslan**  
-Flutter Developer  
-- Clean Code Enthusiast  
-- Game Logic & State Management Focused  
