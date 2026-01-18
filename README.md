@@ -73,7 +73,10 @@ The project is designed with scalability in mind to support future features such
 ---
 
 ## 🧩 Project Structure
+<<<<<<< HEAD
 
+=======
+>>>>>>> bf0ba77f5686b4692f15d3592443eb78b437b0bf
 lib/
 ├── core/
 │ ├── theme/
@@ -90,6 +93,7 @@ lib/
 
 ---
 
+<<<<<<< HEAD
 ## 🚀 Future Enhancements
 
 - Online multiplayer mode
@@ -117,9 +121,15 @@ lib/
 
 ---
 
+=======
+>>>>>>> bf0ba77f5686b4692f15d3592443eb78b437b0bf
 ## 👨‍💻 Developer
 
 **Abdallah Raslan**  
 Flutter Developer  
 - Clean Code Enthusiast  
+<<<<<<< HEAD
 - Game Logic & State Management Focused  
+=======
+- Game Logic & State Management Focused  
+>>>>>>> bf0ba77f5686b4692f15d3592443eb78b437b0bf
