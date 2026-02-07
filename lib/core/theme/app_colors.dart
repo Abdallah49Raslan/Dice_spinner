@@ -28,6 +28,6 @@ abstract class AppColors {
   // ===== Shadows =====
   // ignore: deprecated_member_use
   static Color defaultShadow = Colors.black.withOpacity(0.15);
-  static Color  BorderSide = Colors.white24;
+  static Color  borderSide = Colors.white24;
   
 }

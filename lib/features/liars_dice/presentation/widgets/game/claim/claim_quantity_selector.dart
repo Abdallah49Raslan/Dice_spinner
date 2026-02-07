@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -23,7 +25,8 @@ class ClaimQuantitySelector extends StatelessWidget {
 
     // ✅ Dynamic grid height based on how many rows we actually have
     const crossAxisCount = 6;
-    final itemSize = 44.w; // approximate circle size
+    final itemSize = 44.w;
+    final fontSize = itemSize * 0.32;
     final mainSpacing = 10.h;
     final crossSpacing = 10.w;
 
@@ -87,7 +90,7 @@ class ClaimQuantitySelector extends StatelessWidget {
                       style: TextStyle(
                         color: isSelected ? Colors.black : Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 14.sp,
+                        fontSize: fontSize,
                       ),
                     ),
                   ),

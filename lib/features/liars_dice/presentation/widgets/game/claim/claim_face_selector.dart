@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,6 +23,9 @@ class ClaimFaceSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = LocalizationHelper.of(context);
 
+    final itemSize = 44.w;
+    final fontSize = itemSize * 0.32;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -29,13 +34,14 @@ class ClaimFaceSelector extends StatelessWidget {
           style: TextStyle(color: Colors.white70, fontSize: 14.sp),
         ),
         SizedBox(height: 12.h),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(6, (index) {
             final value = index + 1;
 
-            final bool disabled = value < minFace || (forbidOne && value == 1);
-            final bool isSelected = value == selected;
+            final disabled = value < minFace || (forbidOne && value == 1);
+            final isSelected = value == selected;
 
             return GestureDetector(
               onTap: disabled ? null : () => onChanged(value),
@@ -44,12 +50,13 @@ class ClaimFaceSelector extends StatelessWidget {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
                   curve: Curves.easeOut,
-                  width: 44.w,
-                  height: 44.w,
+                  width: itemSize,
+                  height: itemSize,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color:
-                        isSelected ? Colors.white : Colors.white.withOpacity(0.1),
+                    color: isSelected
+                        ? Colors.white
+                        : Colors.white.withOpacity(0.1),
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
@@ -64,6 +71,7 @@ class ClaimFaceSelector extends StatelessWidget {
                   child: Text(
                     value.toString(),
                     style: TextStyle(
+                      fontSize: fontSize,
                       color: isSelected ? Colors.black : Colors.white,
                       fontWeight: FontWeight.bold,
                     ),

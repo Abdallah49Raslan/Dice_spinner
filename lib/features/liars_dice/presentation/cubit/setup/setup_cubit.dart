@@ -9,11 +9,11 @@ class LiarsDiceSetupCubit extends Cubit<LiarsDiceSetupState> {
   final LiarsDicePresetsRepo presetsRepo;
 
   LiarsDiceSetupCubit(this.presetsRepo)
-      : super(
-          LiarsDiceSetupState.initial(
-            initialNames: const ['Player 1', 'Player 2'], // placeholder
-          ),
-        );
+    : super(
+        LiarsDiceSetupState.initial(
+          initialNames: const ['Player 1', 'Player 2'], // placeholder
+        ),
+      );
 
   Future<void> init({
     required int initialCount,
@@ -55,8 +55,10 @@ class LiarsDiceSetupCubit extends Cubit<LiarsDiceSetupState> {
   }) {
     if (players.length < 2) return;
 
-    final trimmed =
-        players.map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    final trimmed = players
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
     if (trimmed.length < 2) return;
 
     final count = trimmed.length.clamp(2, 6);
@@ -69,13 +71,13 @@ class LiarsDiceSetupCubit extends Cubit<LiarsDiceSetupState> {
   }
 
   Future<void> saveCurrentPreset() async {
-    final players =
-        state.names.map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    final players = state.names
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
     if (players.length < 2) return;
 
     await presetsRepo.savePreset(players);
-    final presets = await presetsRepo.load();
-    emit(state.copyWith(presets: presets));
   }
 
   Future<void> deletePreset(int index) async {

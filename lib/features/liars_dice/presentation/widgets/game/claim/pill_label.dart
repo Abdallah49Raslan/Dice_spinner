@@ -1,11 +1,13 @@
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PillLabel extends StatelessWidget {
   final String text;
 
-  const PillLabel({required this.text});
+  const PillLabel({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {

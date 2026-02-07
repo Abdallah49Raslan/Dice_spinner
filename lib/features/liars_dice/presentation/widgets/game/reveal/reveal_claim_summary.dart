@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import '../../../../../../core/localization/localization_helper.dart';
 import '../../../../domain/entities/claim_model.dart';
 import 'package:flutter/material.dart';

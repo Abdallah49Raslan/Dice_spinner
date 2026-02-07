@@ -1,4 +1,6 @@
 
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -6,7 +8,7 @@ class LastClaimCard extends StatelessWidget {
   final String title;
   final String text;
 
-  const LastClaimCard({required this.title, required this.text});
+  const LastClaimCard({super.key, required this.title, required this.text});
 
   @override
   Widget build(BuildContext context) {

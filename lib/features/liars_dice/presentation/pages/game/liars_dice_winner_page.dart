@@ -80,6 +80,7 @@ class LiarsDiceWinnerPage extends StatelessWidget {
                           return Container(
                             padding: EdgeInsets.all(14.w),
                             decoration: BoxDecoration(
+                              // ignore: deprecated_member_use
                               color: Colors.white.withOpacity(0.08),
                               borderRadius: BorderRadius.circular(14.r),
                               border: Border.all(
